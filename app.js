@@ -4,12 +4,14 @@ const app = express()
 require('dotenv').config({ path: './Config/.env' })
 const morgan = require('morgan');
 app.use(express.json());
+const port = process.env.PORT
 const indexRouter = require('./src/index.router')
 if (process.env.NODE_ENV === 'devolpment') {
     app.use(morgan('dev'));
 }
-app.use("/category",indexRouter.categoryRouter)
-const port = process.env.PORT
+
+
+app.use("/api/v1/category",indexRouter.categoryRouter)
 
 
 DBconnection();
