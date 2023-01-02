@@ -2,7 +2,7 @@ const categoryModel = require('./category.model')
 const slugify = require("slugify")
 const asyncHandler = require('express-async-handler')
 
-// Catch Asyn Error 
+// Catch Asyn Errors
 function catchAsyncErrors(fn) {
     return (req, res, next) => {
         fn(req, res).catch((error) => {
