@@ -6,14 +6,14 @@ const asyncHandler = require('express-async-handler')
 function catchAsyncErrors(fn) {
     return (req, res, next) => {
         fn(req, res).catch((error) => {
-            res.json({ error: error.message })
+            next(error);
         })
     }
 }
 
 
 // create new category
-const createCategory = asyncHandler(async (req, res) => {
+const createCategory = catchAsyncErrors(async (req, res) => {
     const { name } = req.body;
     let newCategory = new categoryModel({ name, slug: slugify(name) });
     await newCategory.save();
@@ -61,6 +61,8 @@ const deleteCategory = catchAsyncErrors(async (req, res) => {
     }
     res.status(200).json({ message: "category has Been Deleted" });
 })
+
+
 
 
 module.exports = {
