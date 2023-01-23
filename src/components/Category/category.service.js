@@ -2,15 +2,9 @@ const categoryModel = require('./category.model')
 const slugify = require("slugify")
 const asyncHandler = require('express-async-handler')
 const AppError = require('../../Utilities/AppError')
+const { catchAsyncErrors } = require('../../Utilities/catchAsync')
 
-// Catch Asyn Errors
-function catchAsyncErrors(fn) {
-    return (req, res, next) => {
-        fn(req, res , next).catch((error) => {
-            next(error);
-        })
-    }
-}
+
 
 
 // create new category
@@ -60,7 +54,7 @@ const updateCategory = catchAsyncErrors(async (req, res, next) => {
 })
 
 //delete category
-const deleteCategory = catchAsyncErrors(async (req, res) => {
+const deleteCategory = catchAsyncErrors(async (req, res,next) => {
     const { id } = req.params;
     let category = await categoryModel.findByIdAndDelete(id);
     if (!category) {
