@@ -1,7 +1,6 @@
 process.on('uncaughtException',(err) => {
     console.log(('uncaughtException',err));
-}
-)
+})
 
 const express = require('express'); 
 const DBconnection = require('./src/DB/DBconnection');
