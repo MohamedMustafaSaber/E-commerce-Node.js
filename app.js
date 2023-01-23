@@ -1,3 +1,8 @@
+process.on('uncaughtException',(err) => {
+    console.log(('uncaughtException',err));
+}
+)
+
 const express = require('express'); 
 const DBconnection = require('./src/DB/DBconnection');
 const app = express()
@@ -23,3 +28,8 @@ app.all('*', (req, res,next) =>{
 app.use(globalMiddleware)
 DBconnection();
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+
+process.on('unhandeledRejection', (err) =>{
+    console.log("unhandeledRejection", err);
+})
