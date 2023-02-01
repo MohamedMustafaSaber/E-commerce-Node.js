@@ -1,15 +1,12 @@
 const { createSubCategory, getSubCategories, getSubCategoryByID, updateSubCategory, deleteSubCategory } = require('./subCategory.service');
 
 
-const router = require('express').Router();
+const router = require('express').Router({mergeParams:true});
 
 
 
-router.post('/createSubCategory',createSubCategory) 
-router.get('/getSubCategories',getSubCategories)
-router.get('/getSubCategoryByID/:id',getSubCategoryByID)
-router.put('/updateSubCategory/:id',updateSubCategory)
-router.delete('/deleteSubCategory/:id',deleteSubCategory);
+router.route('/').post(createSubCategory).get(getSubCategories);
+router.route('/:id').get(getSubCategoryByID).put(updateSubCategory).delete(deleteSubCategory);
 
 
 

@@ -21,9 +21,13 @@ const createSubCategory = catchAsyncErrors(async (req, res , next) => {
 
 
 
-// get all categories
+// get All subCategory or get  each subcategories for specific category
 const getSubCategories = catchAsyncErrors(async (req, res ,next) => {
-    let subCategories = await subCategoryModel.find();
+    let filter = {};
+    if (req.params.categoryId){
+        filter = {category:req.params.categoryId};
+    }
+    let subCategories = await subCategoryModel.find(filter);
     if(!subCategories){
         return next(new AppError(`Categories Not Found`, 400));
     }
@@ -31,17 +35,17 @@ const getSubCategories = catchAsyncErrors(async (req, res ,next) => {
 })
 
 
-// get category By ID 
+// get subCategory By ID 
 const getSubCategoryByID = catchAsyncErrors(async (req, res ,next) => {
     let subCategory = await subCategoryModel.findById(req.params.id);
     if (!subCategory) {
-        return next(new AppError(`Category Not Found`, 404));
+        return next(new AppError(`SubCategory Not Found`, 404));
     }
     res.status(200).json(subCategory);
 })
 
 
-// update category
+// update subCategory
 const updateSubCategory = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params;
     const { name , category } = req.body;
@@ -53,7 +57,7 @@ const updateSubCategory = catchAsyncErrors(async (req, res, next) => {
     res.status(200).json(updatedSubcategory);
 })
 
-//delete category
+//delete subCategory
 const deleteSubCategory = catchAsyncErrors(async (req, res,next) => {
     const { id } = req.params;
     let deletedSubCategory = await subCategoryModel.findByIdAndDelete(id);
