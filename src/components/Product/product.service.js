@@ -22,11 +22,16 @@ const createProduct = catchAsyncErrors(async (req, res , next) => {
 
 // get All Products
 const getProducts = catchAsyncErrors(async (req, res ,next) => {
-    let Products = await ProductModel.find({});
+    let page = req.query.page*1 || 1;
+    if (page < 0) page = 1;
+    let limit = 5;
+    let skip = (page-1)*limit ; 
+    let Products = await ProductModel.find({}).skip(skip).limit(limit);
     if(!Products){
         return next(new AppError(`Products Not Found`, 400));
     }
-    res.status(200).json(Products);
+    res.status(200).json({page,Products});
+    console.log(page);
 })
 
 
