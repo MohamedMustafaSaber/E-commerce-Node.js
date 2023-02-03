@@ -22,6 +22,8 @@ if (process.env.MODE_ENV === 'devolpment') {
 app.use("/api/v1/category",indexRouter.categoryRouter)
 app.use("/api/v1/subCategory",indexRouter.subCategoryRouter)
 app.use("/api/v1/brand",indexRouter.brandRouter)
+app.use("/api/v1/product",indexRouter.productRouter)
+
 
 app.all('*', (req, res,next) =>{
     next(new AppError(`Route : ${req.originalUrl} not found on Server`, 404));

@@ -1,6 +1,6 @@
 const subCategoryModel = require('./subCategory.model')
 const slugify = require("slugify")
-const asyncHandler = require('express-async-handler')
+const factory = require('../Handlers/handler.factory')
 const AppError = require('../../Utilities/AppError')
 const { catchAsyncErrors } = require('../../Utilities/catchAsync')
 
@@ -58,14 +58,7 @@ const updateSubCategory = catchAsyncErrors(async (req, res, next) => {
 })
 
 //delete subCategory
-const deleteSubCategory = catchAsyncErrors(async (req, res,next) => {
-    const { id } = req.params;
-    let deletedSubCategory = await subCategoryModel.findByIdAndDelete(id);
-    if (!deletedSubCategory) {
-        return next(new AppError(`Category Not Found To Delete`, 404));
-    }
-    res.status(200).json({ message: "category has Been Deleted" });
-})
+const deleteSubCategory = factory.deleteFun(subCategoryModel);
 
 
 
