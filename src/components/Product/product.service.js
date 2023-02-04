@@ -50,6 +50,11 @@ const getProducts = catchAsyncErrors(async (req, res ,next) => {
             { description: { $regex: keyword, $options: "i" }}
         ]})
     }
+    // 5. select Fields
+    if (query.query.fields) {
+        let fields = query.query.fields.split(',').join(' ');
+        mongooseQuery.select(fields);
+    }
     let Products = await mongooseQuery;
     if(!Products){
         return next(new AppError(`Products Not Found`, 400));
