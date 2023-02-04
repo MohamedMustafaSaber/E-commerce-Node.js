@@ -33,14 +33,16 @@ const getProducts = catchAsyncErrors(async (req, res ,next) => {
     excludedParams.forEach((ele)=>{
         delete query[ele];
     })
-
-    console.log(req.query);
     query  = JSON.stringify(query);
     query = query.replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`)
     query = JSON.parse(query);
-    console.log(query);
-
-    let Products = await ProductModel.find(query).skip(skip).limit(limit);
+    let mongooseQuery =  ProductModel.find(query).skip(skip).limit(limit);
+    //3. Sorting 
+    if(query.query.sort) {
+        let sortedBy = query.query.sort.split(',').join(' ');
+        mongooseQuery.sort(sortedBy);
+    }
+    let Products = await mongooseQuery;
     if(!Products){
         return next(new AppError(`Products Not Found`, 400));
     }
