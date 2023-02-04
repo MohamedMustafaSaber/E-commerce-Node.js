@@ -3,6 +3,7 @@ const slugify = require("slugify")
 const AppError = require('../../Utilities/AppError')
 const { catchAsyncErrors } = require('../../Utilities/catchAsync')
 const factory = require('../Handlers/handler.factory')
+const { ApiFeatures } = require('../../Utilities/ApiFeatures')
 
 
 
@@ -22,45 +23,12 @@ const createProduct = catchAsyncErrors(async (req, res , next) => {
 
 // get All Products
 const getProducts = catchAsyncErrors(async (req, res ,next) => {
-    //1. Panigation
-    let page = req.query.page*1 || 1;
-    if (page < 0) page = 1;
-    let limit = 5;
-    let skip = (page-1)*limit ;
-    //2. Filter
-    let query = {...req.query};
-    let excludedParams = ['page' , 'sort' , 'keyword'];
-    excludedParams.forEach((ele)=>{
-        delete query[ele];
-    })
-    query  = JSON.stringify(query);
-    query = query.replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`)
-    query = JSON.parse(query);
-    let mongooseQuery =  ProductModel.find(query).skip(skip).limit(limit);
-    //3. Sorting 
-    if(query.query.sort) {
-        let sortedBy = query.query.sort.split(',').join(' ');
-        mongooseQuery.sort(sortedBy);
-    }
-    //4. Search
-    if(req.query.keyword){
-        let keyword = req.query.keyword;
-        mongooseQuery.find({ $or: [
-            { name: { $regex: keyword, $options: "i" } },
-            { description: { $regex: keyword, $options: "i" }}
-        ]})
-    }
-    // 5. select Fields
-    if (query.query.fields) {
-        let fields = query.query.fields.split(',').join(' ');
-        mongooseQuery.select(fields);
-    }
-    let Products = await mongooseQuery;
+    let apiFeatures = new ApiFeatures(ProductModel.find() , req.query).paginate().filter().sort().search().selectFields();
+    let Products = await apiFeatures.mongooseQuery;
     if(!Products){
         return next(new AppError(`Products Not Found`, 400));
     }
-    res.status(200).json({page,Products});
-    
+    res.status(200).json({page:apiFeatures.page,Products});  
 })
 
 
