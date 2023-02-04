@@ -22,16 +22,30 @@ const createProduct = catchAsyncErrors(async (req, res , next) => {
 
 // get All Products
 const getProducts = catchAsyncErrors(async (req, res ,next) => {
+    //1. Panigation
     let page = req.query.page*1 || 1;
     if (page < 0) page = 1;
     let limit = 5;
-    let skip = (page-1)*limit ; 
-    let Products = await ProductModel.find({}).skip(skip).limit(limit);
+    let skip = (page-1)*limit ;
+    //2. Filter
+    let query = {...req.query};
+    let excludedParams = ['page' , 'sort' , 'keyword'];
+    excludedParams.forEach((ele)=>{
+        delete query[ele];
+    })
+
+    console.log(req.query);
+    query  = JSON.stringify(query);
+    query = query.replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`)
+    query = JSON.parse(query);
+    console.log(query);
+
+    let Products = await ProductModel.find(query).skip(skip).limit(limit);
     if(!Products){
         return next(new AppError(`Products Not Found`, 400));
     }
     res.status(200).json({page,Products});
-    console.log(page);
+    
 })
 
 
