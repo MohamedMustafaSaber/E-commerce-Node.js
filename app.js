@@ -8,6 +8,7 @@ const app = express()
 require('dotenv').config({ path: './Config/.env' })
 const morgan = require('morgan');
 app.use(express.json());
+app.use(express.static('Uploads'))
 const port = process.env.PORT
 const indexRouter = require('./src/index.router');
 const { default: mongoose } = require('mongoose');

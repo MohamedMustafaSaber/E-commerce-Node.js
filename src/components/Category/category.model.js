@@ -7,6 +7,8 @@ const schema  = Schema({
     img:{type :String}
     
 },{timestamps: true})
-
+schema.post('init', (doc) => {
+    doc.image = `${process.env.BASE_URL}` + "/Category/" + doc.image;
+})
 
 module.exports = model('category' , schema);

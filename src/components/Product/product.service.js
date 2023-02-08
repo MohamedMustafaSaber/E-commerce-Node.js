@@ -9,7 +9,13 @@ const { ApiFeatures } = require('../../Utilities/ApiFeatures')
 
 // create new Product
 const createProduct = catchAsyncErrors(async (req, res , next) => {
+    let productImages = []
     req.body.slug = slugify(req.body.name);
+    req.body.imageCover = req.files.imageCover[0].filename;
+    req.files.images.forEach((image)=>{
+        productImages.push(image.filename);
+    })
+    req.body.images = productImages;
     let newProduct = new ProductModel(req.body);
     await newProduct.save();
     if(!newProduct){
