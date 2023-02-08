@@ -6,11 +6,12 @@ const { catchAsyncErrors } = require('../../Utilities/catchAsync')
 
 
 
-
 // create new category
 const createCategory = catchAsyncErrors(async (req, res , next) => {
     const { name } = req.body;
-    let newCategory = new categoryModel({ name, slug: slugify(name) });
+    req.body.slug = slugify(name);
+    req.body.image = req.file?.filename;
+    let newCategory = new categoryModel(req.body);
     await newCategory.save();
     if(!newCategory){
         return next(new AppError(`can not create New category`, 400));
@@ -45,7 +46,12 @@ const getCategoryByID = catchAsyncErrors(async (req, res ,next) => {
 const updateCategory = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params;
     const { name } = req.body;
-    let category = await categoryModel.findByIdAndUpdate(id, { name, slug: slugify(name) }, { new: true });
+    if(req.body.name){
+        req.body.slug = slugify(name);
+    }
+    
+    req.body.image = req.file?.filename;
+    let category = await categoryModel.findByIdAndUpdate(id, req.body , { new: true });
 
     if (!category) {
         return next(new AppError(`Category Not Found To Update`, 404));

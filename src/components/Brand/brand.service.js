@@ -10,7 +10,9 @@ const factory = require('../Handlers/handler.factory')
 // create new Brand
 const createBrand = catchAsyncErrors(async (req, res , next) => {
     const { name } = req.body;
-    let newBrand = new BrandModel({ name, slug: slugify(name) });
+    req.body.slug = slugify(name);
+    req.body.image = req.file?.filename;
+    let newBrand = new BrandModel(req.body);
     await newBrand.save();
     if(!newBrand){
         return next(new AppError(`can not create New Brand`, 400));
@@ -45,7 +47,11 @@ const getBrandyByID = catchAsyncErrors(async (req, res ,next) => {
 const updateBrand= catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params;
     const { name} = req.body;
-    let updatedBrand= await BrandModel.findByIdAndUpdate(id, { name, slug: slugify(name) }, { new: true });
+    if (req.body.name) {
+        req.body.slug = slugify(name);
+    }
+    req.body.image = req.file?.filename;
+    let updatedBrand= await BrandModel.findByIdAndUpdate(id, req.body, { new: true });
 
     if (!updatedBrand) {
         return next(new AppError(`Brand Not Found To Update`, 404));
