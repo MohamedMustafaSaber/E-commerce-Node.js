@@ -3,21 +3,36 @@ const slugify = require("slugify")
 const AppError = require('../../Utilities/AppError')
 const { catchAsyncErrors } = require('../../Utilities/catchAsync')
 const factory = require('../Handlers/handler.factory')
+const cloudinary = require('cloudinary');
+
+
+// Configuration 
+cloudinary.config({
+    cloud_name: "dpa8mknlt",
+    api_key: "623725392122991",
+    api_secret: "JaYkgK-mINAr71MaP9oVAciGw3Y"
+});
+
 
 
 
 
 // create new Brand
 const createBrand = catchAsyncErrors(async (req, res , next) => {
-    const { name } = req.body;
-    req.body.slug = slugify(name);
-    req.body.image = req.file?.filename;
-    let newBrand = new BrandModel(req.body);
-    await newBrand.save();
-    if(!newBrand){
-        return next(new AppError(`can not create New Brand`, 400));
-    }
-    res.status(200).json(newBrand);
+    // cloudinary.v2.uploader.upload(req.file.path , async(error , result)=>{
+        const { name } = req.body;
+        req.body.slug = slugify(name);
+        // req.body.image = result.secure_url;
+        req.body.image = req.file?.filename;
+        let newBrand = new BrandModel(req.body);
+        await newBrand.save();
+        if (!newBrand) {
+            return next(new AppError(`can not create New Brand`, 400));
+        }
+        res.status(200).json(newBrand);
+        console.log(result)
+    // })
+    
 })
 
 
