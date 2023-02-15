@@ -1,5 +1,5 @@
 const { Schema, model, Types } = require("mongoose");
-
+const bcrypt = require('bcrypt');
 
 const schema  = Schema({
     name : {type : String , required: true , trim : true  , minlenght: 2},
@@ -12,6 +12,11 @@ const schema  = Schema({
 
 },{timestamps: true});
 
-
+schema.pre('save' ,async function(){
+    this.password = await bcrypt.hash(this.password, Number(process.env.ROUND))
+})
+schema.pre('findOneAndUpdate', async function () {
+    this._update.password = await bcrypt.hash(this._update.password, Number(process.env.ROUND))
+})
 
 module.exports = model('user' , schema);

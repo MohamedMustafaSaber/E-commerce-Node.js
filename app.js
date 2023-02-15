@@ -24,6 +24,7 @@ app.use("/api/v1/category",indexRouter.categoryRouter)
 app.use("/api/v1/subCategory",indexRouter.subCategoryRouter)
 app.use("/api/v1/brand",indexRouter.brandRouter)
 app.use("/api/v1/product",indexRouter.productRouter)
+app.use("/api/v1/users",indexRouter.userRouter)
 
 
 app.all('*', (req, res,next) =>{
