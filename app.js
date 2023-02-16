@@ -14,17 +14,18 @@ const indexRouter = require('./src/index.router');
 const { default: mongoose } = require('mongoose');
 const AppError = require('./src/Utilities/AppError');
 const globalMiddleware = require('./src/Utilities/GolbalMiddleware');
+const sendEmail = require('./src/Utilities/sendEmail.js');
 mongoose.set('strictQuery',false)
 if (process.env.MODE_ENV === 'devolpment') {
     app.use(morgan('dev'));
 }
-
 
 app.use("/api/v1/category",indexRouter.categoryRouter)
 app.use("/api/v1/subCategory",indexRouter.subCategoryRouter)
 app.use("/api/v1/brand",indexRouter.brandRouter)
 app.use("/api/v1/product",indexRouter.productRouter)
 app.use("/api/v1/users",indexRouter.userRouter)
+
 
 
 app.all('*', (req, res,next) =>{

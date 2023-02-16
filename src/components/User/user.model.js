@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const schema  = Schema({
     name : {type : String , required: true , trim : true  , minlenght: 2},
     email : {type : String, required: true, trim : true , unique: [true , "email must be UNIQUE"]},
+    emailConfirmed : {type : Boolean , default: false},
     phone : {type : String, required: true, trim : true},
     password : {type : String, required: true, minlenght:[6 , "password must be at least 6 characters"]},
     passwordChangedAt : Date,
@@ -16,8 +17,11 @@ const schema  = Schema({
 schema.pre('save' ,async function(){
     this.password = await bcrypt.hash(this.password, Number(process.env.ROUND))
 })
-schema.pre('findOneAndUpdate', async function () {
-    this._update.password = await bcrypt.hash(this._update.password, Number(process.env.ROUND))
+schema.pre('findOneAndUpdate', async function (req , res , next) {
+    if (this._update.password){
+        this._update.password = await bcrypt.hash(this._update.password, Number(process.env.ROUND))
+    }
+    
 })
 
 module.exports = model('user' , schema);
