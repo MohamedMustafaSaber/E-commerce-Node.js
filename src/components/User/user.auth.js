@@ -32,7 +32,9 @@ const signIn = catchAsyncErrors(async (req, res, next) => {
 
 })
 
-const protectedRoutes = catchAsyncErrors(async(req,res , next)=>{
+
+// Authentication
+const ProtectedRoutes = catchAsyncErrors(async(req,res , next)=>{
     // 1. check if token is provided
     let token = req.headers.token;
     if(!token) return next(new AppError('Token is required' , 401))
@@ -57,8 +59,19 @@ const protectedRoutes = catchAsyncErrors(async(req,res , next)=>{
 })
 
 
+const AllowedTo = (...roles)=>{
+    return catchAsyncErrors(async(req , res ,next)=>{
+        if (!roles.includes(req.user.role)){
+            return next(new AppError("You Are Not Authorized To Access This Route") , 401)
+        }
+        next();
+    })
+}
+
+
 module.exports = {
     signUp,
     signIn,
-    protectedRoutes
+    ProtectedRoutes,
+    AllowedTo
 }
