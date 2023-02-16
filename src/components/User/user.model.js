@@ -6,6 +6,7 @@ const schema  = Schema({
     email : {type : String, required: true, trim : true , unique: [true , "email must be UNIQUE"]},
     phone : {type : String, required: true, trim : true},
     password : {type : String, required: true, minlenght:[6 , "password must be at least 6 characters"]},
+    passwordChangedAt : Date,
     profileImg : {type : String},
     role:{type: String, enum: ["user", "admin"], default: "user"},
     isActive : {type: Boolean, default: true},

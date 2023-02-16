@@ -63,6 +63,7 @@ const updateUser = catchAsyncErrors(async (req, res, next) => {
 
 const changeUserPassword = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params;
+    req.body.passwordChangedAt = Date.now();
     let user = await userModel.findByIdAndUpdate(id, req.body, { new: true });
     if (!user) {
         return next(new AppError(`user Not Found To Update`, 404));
