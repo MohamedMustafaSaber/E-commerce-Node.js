@@ -62,7 +62,18 @@ const schema = Schema({
         type: Number,
         default: 0,
     },
-}, { timestamps: true });
+}, { timestamps: true , toJson:{virtuals: true} , toObject:{virtuals:true} });
+
+schema.virtual('reviews',{
+    ref:'review',
+    foreignField: 'product',
+    localField:"_id"
+})
+
+schema.pre("findOne", function(){
+    this.populate('reviews','name');
+})
+
 schema.post('init', (doc) => {
     let images = [];
     doc.imageCover = `${process.env.BASE_URL}` + "/Product/" + doc.imageCover;

@@ -30,7 +30,7 @@ const signIn = catchAsyncErrors(async (req, res, next) => {
     if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
         return next(new AppError(`Incorrect Email or Password`, 400));
     }
-    else if (!user.emailConfirmed){
+    else if (!user.emailConfirm){
         return next(new AppError(`First Confirm Your Email...`, 400));
     }
     let token = jwt.sign({ name : user.name , userId : user._id }, process.env.JWT_KEY);
@@ -42,7 +42,7 @@ const signIn = catchAsyncErrors(async (req, res, next) => {
 // Confirm Email
 const confirmEmail = catchAsyncErrors(async (req, res , next) => {
     const userId = req.params.id;
-    await userModel.findByIdAndUpdate(userId, { emailConfirmed: true });
+    await userModel.findByIdAndUpdate(userId, { emailConfirm: true });
     res.json({ message: "Email Has been Confirmed Successfully", })
 })
 
@@ -63,10 +63,13 @@ const ProtectedRoutes = catchAsyncErrors(async(req,res , next)=>{
     }
 
     // 4. check if password is changed --> Turn off all Tokens
-    let changePasswordTime = parseInt(user.passwordChangedAt.getTime() / 1000)  // chabge password change time to seconds
+    if(user.passwordChangedAt){
+        let changePasswordTime = parseInt(user.passwordChangedAt.getTime() / 1000)  // chabge password change time to seconds
     if(changePasswordTime > decoded.iat){
         return next(new AppError("Password changed"))
     }
+    }
+    
 
     req.user = user ;
     next();

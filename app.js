@@ -25,12 +25,13 @@ app.use("/api/v1/subCategory",indexRouter.subCategoryRouter)
 app.use("/api/v1/brand",indexRouter.brandRouter)
 app.use("/api/v1/product",indexRouter.productRouter)
 app.use("/api/v1/users",indexRouter.userRouter)
+app.use("/api/v1/review",indexRouter.reviewRouter)
 
 
 
 app.all('*', (req, res,next) =>{
     next(new AppError(`Route : ${req.originalUrl} not found on Server`, 404));
-} )
+})
 //global errorHandler middleware
 app.use(globalMiddleware)
 DBconnection();

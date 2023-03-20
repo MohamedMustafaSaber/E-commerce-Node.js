@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const schema  = Schema({
     name : {type : String , required: true , trim : true  , minlenght: 2},
     email : {type : String, required: true, trim : true , unique: [true , "email must be UNIQUE"]},
-    emailConfirmed : {type : Boolean , default: false},
+    emailConfirm : {type : Boolean , default: false},
     phone : {type : String, required: true, trim : true},
     password : {type : String, required: true, minlenght:[6 , "password must be at least 6 characters"]},
     passwordChangedAt : Date,
